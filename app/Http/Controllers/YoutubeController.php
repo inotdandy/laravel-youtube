@@ -29,7 +29,16 @@ class YoutubeController extends Controller
 
     public function watch($id){
 
-        return view('watch');
+        if(session('search_query')){
+
+            $videoLists = $this->_videoLists(session('search_query'));
+        }else{
+            $videoLists = $this->_videoLists(session('laravel'));
+        }
+
+        $single_video = $this->_singleVideo($id);
+
+        return view('watch', compact('single_video', 'videoLists'));
     }
 
     protected function _videoLists($search_key){
@@ -49,5 +58,19 @@ class YoutubeController extends Controller
         File::put(storage_path().'/app/public/results.json',$response->body());
 
         return $results;
+    }
+
+    protected function _singleVideo($id){
+
+        $api_key = config('services.youtube.api_key');
+        $part = 'snippet';
+        $url = "https://www.googleapis.com/youtube/v3/videos?part=$part&id=$id&key=$api_key";
+        $response = Http::get($url);
+        $result = json_decode($response);
+        
+        //store the single video json response in the storage path
+        File::put(storage_path().'/app/public/single_video.json', $response->body());
+
+        return $result;
     }
 }
