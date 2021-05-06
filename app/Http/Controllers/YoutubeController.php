@@ -9,15 +9,22 @@ use Illuminate\Support\Facades\Http;
 class YoutubeController extends Controller
 {
     public function index(){
-        
-        $videoLists = $this->_videoLists('laravel tutorial');
+        if(session('search_query')){
+
+            $videoLists = $this->_videoLists(session('search_query'));
+        }else{
+            $videoLists = $this->_videoLists(session('laravel'));
+        }
         
         return view('index', compact('videoLists'));
     }
 
-    public function results(){
+    public function results(Request $request){
 
-        return view('results');
+        session(['search_query' => $request->search_query]);
+        $videoLists = $this->_videoLists(session('search_query'));
+
+        return view('results', compact('videoLists'));
     }
 
     public function watch($id){

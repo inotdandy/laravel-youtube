@@ -9,7 +9,7 @@
                     <div class="card mb-4">
                         <img src="{{ $item->snippet->thumbnails->medium->url }}" alt="" class="img-fluid">
                         <div class="car-body">
-                            <h5 class="card-title">{{Str::limit( $item->snippet->title, 50)}}</h5>
+                            <h5 class="card-title">{{Str::limit( $item->snippet->title, $limit=50, $end="...")}}</h5>
                             <div class="card-footer text-muted">
                                 Published at: {{ date('d M Y', strtotime($item->snippet->publishTime))}}
                             </div>
